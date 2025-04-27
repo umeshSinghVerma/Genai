@@ -1,9 +1,7 @@
 # 🧠 RAG-Powered Restaurant Chatbot with LangGraph, Milvus, and Gemini
 
 ## Video Demonstration
-
-
-https://github.com/user-attachments/assets/27124014-97fe-4412-8e86-c82a32a6e2f5
+https://github.com/user-attachments/assets/8e112b3c-6a47-4c93-bb39-8aca872ebfc0
 
 
 
