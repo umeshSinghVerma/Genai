@@ -8,29 +8,21 @@ from langgraph.types import Send
 from langgraph.prebuilt import ToolNode
 from langchain_core.messages import HumanMessage, ToolMessage,SystemMessage
 from langchain_core.tools import tool
-# from langchain_groq import ChatGroq
+from langchain_groq import ChatGroq
 from transformers import AutoTokenizer, AutoModel
 from pymilvus import connections, Collection
 import torch
 
 
 # from  import CHATBOT_PROMPT,VECTOR_DB_TOOL_PROMPT
-from app.prompts import CHATBOT_PROMPT, GENERATE_RESPONSE_PROMPT
+from prompts import CHATBOT_PROMPT, GENERATE_RESPONSE_PROMPT
 
 load_dotenv()
-# GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-# llm = ChatGroq(
-#     model="llama-3.1-8b-instant",
-#     temperature=0,
-#     max_tokens=None,
-#     timeout=None,
-#     max_retries=2,
-#     api_key=GROQ_API_KEY
-# )
 os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY", "")
 MILVUS_URI = os.getenv("MILVUS_URI")
 MILVUS_TOKEN = os.getenv("MILVUS_TOKEN")
-llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0.7)
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-preview-04-17", temperature=0.7)
+llm2 = ChatGoogleGenerativeAI(model="gemini-2.5-pro-preview-03-25", temperature=0.7)
 
 milvus_uri = MILVUS_URI
 token = MILVUS_TOKEN
@@ -55,20 +47,13 @@ print("✅ Milvus collection loaded and ready.")
 tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
 model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
 
-import requests
-
-
-def embed_text(text):
-    inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True)
-    with torch.no_grad():
-        embeddings = model(**inputs).last_hidden_state.mean(dim=1).numpy()
-    return embeddings.flatten().tolist()
-
-
 class State(MessagesState):
     pass 
 
 def embed_text(text):
+    """
+    Generates a vector embedding for the given text.
+    """
     inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True)
     with torch.no_grad():
         embeddings = model(**inputs).last_hidden_state.mean(dim=1).numpy()
@@ -104,7 +89,15 @@ async def call_db_tool(query: str) -> str:
 
 
 async def call_db(input):
-    # print("insidesdb------->",input)
+    """
+    Searches the Milvus vector database based on query embedding.
+
+    Args:
+        input (Dict): Input containing 'query' and 'id'.
+
+    Returns:
+        Dict[str, List[ToolMessage]]: Retrieved documents wrapped in a ToolMessage.
+    """
     query = input['args']['query']
     tool_call_id = input['id']
     print("query",query)
@@ -136,17 +129,22 @@ async def call_db(input):
     # Cap total docs to avoid overly large context
     selected_docs = list(all_retrieved_docs)[:4]
     
-    print("query ",query)
-    
+   
     context = "Query : "+ query  + " Respose : "+"\n\n".join(selected_docs)
-    # print(context)
-    
-    
     
     
     return {"messages": [ToolMessage(content=context, tool_call_id=tool_call_id)]}
 
 async def chatbot(state: State):
+    """
+    Main chatbot node. Takes the current conversation and responds.
+
+    Args:
+        state (State): Current conversation state.
+
+    Returns:
+        Dict[str, List]: Messages after LLM response.
+    """
     tools=[call_db_tool]
     
     finalMessages = [SystemMessage(CHATBOT_PROMPT)] + state['messages']
@@ -162,6 +160,15 @@ async def combine_node(state:State):
 
 
 async def generate_response(state: State):
+    """
+    Post-processes tool outputs and generates the final assistant message.
+
+    Args:
+        state (State): Current conversation state.
+
+    Returns:
+        Dict[str, List]: Messages after final assistant response.
+    """
     messages = state['messages']
 
     # Find the last human message (FIXED)
@@ -180,9 +187,7 @@ async def generate_response(state: State):
     tool_messages_text = "\n".join(tool_messages)  # join all tool messages
     final_human_content = tool_messages_text + "\n" + human_message.content
 
-    print("final_message_", tool_messages_text, final_human_content)
 
-    # Now create the final list
     final_messages = [
         SystemMessage(GENERATE_RESPONSE_PROMPT),
         HumanMessage(content=final_human_content)
@@ -193,7 +198,15 @@ async def generate_response(state: State):
 
 # Chatbot node router. Based on tool calls, creates the list of the next parallel nodes.
 def assign_tool(state: State) -> list[Send] | str:
-    # print("state_ass", state)
+    """
+    Router function that decides the next tool or ends the conversation.
+
+    Args:
+        state (State): Current conversation state.
+
+    Returns:
+        Union[List[Send], str]: List of Send events or "__end__" string.
+    """
     messages = state["messages"]
     last_message = messages[-1]
     # print(last_message)
