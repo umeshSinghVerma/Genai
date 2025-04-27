@@ -1,0 +1,9 @@
+streamlit
+pymilvus
+torch
+transformers
+requests
+uvicorn
+langgraph
+fastapi
+langchain_google_genai
