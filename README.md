@@ -108,8 +108,8 @@ You can directly use the `Training.ipynb` file provided!
 1. **Clone Repository**
 
 ```bash
-git clone https://github.com/yourusername/rag-chatbot.git
-cd rag-chatbot
+https://github.com/umeshSinghVerma/Genai.git
+cd Genai
 ```
 
 2. **Install Dependencies**
@@ -131,10 +131,20 @@ GOOGLE_API_KEY=your_google_api_key
 4. **Run the Server**
 
 ```bash
-python app/server.py
+cd app
+python server.py
 ```
 
 Server will start at `http://localhost:8000`
+
+5. **Run the Frontend**
+
+```bash
+cd ..
+streamlit run ui.py
+```
+
+Frontend will start at `http://localhost:8501`
 
 
 ## ⚡ Prerequisites
