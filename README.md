@@ -1,11 +1,11 @@
 # 🧠 RAG-Powered Restaurant Chatbot with LangGraph, Milvus, and Gemini
 
-## YouTube Demonstration
+## Video Demonstration
 
 🎬 **Demo Video**  
 *Click on the image to watch the walkthrough.*
 
-[![Demo](https://github.com/umeshSinghVerma/Genai/blob/master/assets/Screenshot%202025-04-27%20104155.png?raw=true)](https://youtube.com/your-video-link)
+[![Demo](https://github.com/umeshSinghVerma/Genai/blob/master/assets/Screenshot%202025-04-27%20104155.png?raw=true)](https://drive.google.com/file/d/1lcnvfpj1jjcnYW751yohlVXDPi6Mj8M-/view?usp=drive_link)
 
 
 ## ✨ Features
