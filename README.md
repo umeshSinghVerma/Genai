@@ -56,7 +56,7 @@ graph TD
     H --> I[Final Answer to User]
 
 ```
-
+Check the complete comprehensive architecture at [architecture.md](https://github.com/umeshSinghVerma/Genai/blob/master/architecture.md)
 
 ## 🛠️ Components
 
