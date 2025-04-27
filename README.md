@@ -31,7 +31,7 @@
 | ![Image 1](https://github.com/umeshSinghVerma/Genai/blob/master/assets/Screenshot%202025-04-27%20111207.png?raw=true) |
 | --------------------------------------------------- |
 
-| ![Image 1](https://github.com/umeshSinghVerma/Genai/blob/master/assets/Screenshot%202025-04-27%20105805.png?raw=true) |
+| ![Image 1](https://raw.githubusercontent.com/umeshSinghVerma/Genai/refs/heads/master/assets/Screenshot%202025-04-27%20105805.png) |
 | --------------------------------------------------- |
 
 | ![Image 1](https://github.com/umeshSinghVerma/Genai/blob/master/assets/Screenshot%202025-04-27%20110217.png?raw=true) | ![Image 2](https://github.com/umeshSinghVerma/Genai/blob/master/assets/Screenshot%202025-04-27%20110640.png?raw=true) |
