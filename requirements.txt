@@ -7,3 +7,7 @@ uvicorn
 langgraph
 fastapi
 langchain_google_genai
+selenium
+pymilvus
+pytesseract
+langchain-community
